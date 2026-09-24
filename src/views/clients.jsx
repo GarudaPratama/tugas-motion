@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { Star, Quote, Building } from 'lucide-react';
 import ContentContainer from '@/components/ContentContainer';
 
@@ -43,14 +44,78 @@ const testimonials = [
   },
 ];
 
+// Easing kustom bertema mewah
+const luxuryEase = [0.22, 1, 0.36, 1];
+
+// 1. Header Variants
+const headerVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, ease: luxuryEase },
+  },
+};
+
+// 2. Partner Badges Container (Staggering efek domino)
+const partnerContainerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const partnerBadgeVariants = {
+  hidden: { opacity: 0, y: 20, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.5, ease: luxuryEase },
+  },
+};
+
+// 3. Testimonial Grid Container
+const testimonialContainerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const testimonialCardVariants = {
+  hidden: { opacity: 0, y: 35, scale: 0.98 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.7, ease: luxuryEase },
+  },
+};
+
 function ClientsSection() {
   return (
     <section
       id='klien-kami'
-      className='py-16 bg-white'>
+      className='py-16 bg-white overflow-hidden'>
       <ContentContainer isRelative={false}>
+        
         {/* Header */}
-        <div className='text-center max-w-xl mx-auto mb-10'>
+        <motion.div
+          variants={headerVariants}
+          initial='hidden'
+          whileInView='visible'
+          viewport={{ once: true, amount: 0.4 }}
+          className='text-center max-w-xl mx-auto mb-10'
+        >
           <span className='text-xs font-semibold px-3 py-1 rounded-full bg-orange-100 text-main'>
             Klien & Mitra
           </span>
@@ -60,14 +125,24 @@ function ClientsSection() {
           <p className='text-slate-600 text-sm mt-2'>
             Kolaborasi teknologi bersama instansi pemerintah dan industri.
           </p>
-        </div>
+        </motion.div>
 
         {/* Partner Badges */}
-        <div className='flex flex-wrap items-center justify-center gap-3 mb-12'>
+        <motion.div
+          variants={partnerContainerVariants}
+          initial='hidden'
+          whileInView='visible'
+          viewport={{ once: true, amount: 0.3 }}
+          className='flex flex-wrap items-center justify-center gap-3 mb-12'
+        >
           {partners.map((p) => (
-            <div
+            <motion.div
               key={p.name}
-              className='flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-50 border border-slate-200'>
+              variants={partnerBadgeVariants}
+              whileHover={{ y: -4, scale: 1.03 }}
+              transition={{ type: 'spring', stiffness: 350, damping: 25 }}
+              className='flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-50 border border-slate-200 shadow-sm hover:border-orange-200 hover:bg-orange-50/30 transition-colors cursor-pointer'
+            >
               <Building
                 size={16}
                 className='text-main'
@@ -76,19 +151,28 @@ function ClientsSection() {
                 <p className='text-xs font-bold text-slate-800'>{p.name}</p>
                 <p className='text-[10px] text-slate-500'>{p.category}</p>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Testimonials Grid */}
-        <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+        <motion.div
+          variants={testimonialContainerVariants}
+          initial='hidden'
+          whileInView='visible'
+          viewport={{ once: true, amount: 0.2 }}
+          className='grid grid-cols-1 md:grid-cols-3 gap-6'
+        >
           {testimonials.map((item) => (
-            <div
+            <motion.div
               key={item.id}
-              className='bg-slate-50 p-6 rounded-xl border border-slate-200 flex flex-col justify-between relative'>
+              variants={testimonialCardVariants}
+              whileHover={{ y: -6 }}
+              className='group bg-slate-50 p-6 rounded-xl border border-slate-200 hover:border-orange-200 hover:bg-white hover:shadow-xl transition-all duration-300 flex flex-col justify-between relative'
+            >
               <Quote
                 size={28}
-                className='text-orange-200 absolute top-4 right-4'
+                className='text-orange-200 group-hover:text-main group-hover:scale-110 transition-all duration-300 absolute top-4 right-4'
               />
 
               <div>
@@ -107,22 +191,24 @@ function ClientsSection() {
                 </p>
               </div>
 
-              <div className='flex items-center gap-3 pt-3 border-t border-slate-200'>
-                <img
+              <div className='flex items-center gap-3 pt-3 border-t border-slate-200 group-hover:border-slate-100 transition-colors'>
+                <motion.img
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ type: 'spring', stiffness: 300 }}
                   src={item.avatar}
                   alt={item.name}
-                  className='w-9 h-9 rounded-full object-cover'
+                  className='w-9 h-9 rounded-full object-cover ring-2 ring-transparent group-hover:ring-main/20 transition-all'
                 />
                 <div>
-                  <h4 className='text-xs font-bold text-[#112352]'>
+                  <h4 className='text-xs font-bold text-[#112352] group-hover:text-main transition-colors'>
                     {item.name}
                   </h4>
                   <p className='text-[11px] text-slate-500'>{item.role}</p>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </ContentContainer>
     </section>
   );
