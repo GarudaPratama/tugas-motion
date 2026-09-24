@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import ContentContainer from '@/components/ContentContainer';
 
 const categories = [
@@ -65,6 +66,46 @@ const galleryItems = [
   },
 ];
 
+// Easing kustom bertema mewah
+const luxuryEase = [0.22, 1, 0.36, 1];
+
+// 1. Header Variants
+const headerVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, ease: luxuryEase },
+  },
+};
+
+// 2. Filter Bar Variants
+const filterContainerVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: luxuryEase, delay: 0.1 },
+  },
+};
+
+// 3. Card Variants (Masuk, Keluar, dan Berganti Kategori)
+const cardVariants = {
+  hidden: { opacity: 0, scale: 0.9, y: 20 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: luxuryEase },
+  },
+  exit: {
+    opacity: 0,
+    scale: 0.9,
+    y: 10,
+    transition: { duration: 0.3, ease: luxuryEase },
+  },
+};
+
 function GallerySection() {
   const [activeCategory, setActiveCategory] = useState('all');
 
@@ -76,10 +117,16 @@ function GallerySection() {
   return (
     <section
       id='galeri'
-      className='py-16 bg-slate-50'>
+      className='py-16 bg-slate-50 overflow-hidden'>
       <ContentContainer isRelative={false}>
         {/* Header */}
-        <div className='text-center max-w-xl mx-auto mb-8'>
+        <motion.div
+          variants={headerVariants}
+          initial='hidden'
+          whileInView='visible'
+          viewport={{ once: true, amount: 0.4 }}
+          className='text-center max-w-xl mx-auto mb-8'
+        >
           <span className='text-xs font-semibold px-3 py-1 rounded-full bg-orange-100 text-main'>
             Galeri
           </span>
@@ -89,49 +136,72 @@ function GallerySection() {
           <p className='text-slate-600 text-sm mt-2'>
             Dokumentasi workshop inovasi dan rilis teknologi Sandbox.
           </p>
-        </div>
+        </motion.div>
 
         {/* Filter Buttons */}
-        <div className='flex flex-wrap items-center justify-center gap-2 mb-8'>
+        <motion.div
+          variants={filterContainerVariants}
+          initial='hidden'
+          whileInView='visible'
+          viewport={{ once: true, amount: 0.4 }}
+          className='flex flex-wrap items-center justify-center gap-2 mb-8'
+        >
           {categories.map((cat) => (
-            <button
+            <motion.button
               key={cat.id}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => setActiveCategory(cat.id)}
               className={`px-4 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer ${
                 activeCategory === cat.id
-                  ? 'bg-main text-white'
+                  ? 'bg-main text-white shadow-md shadow-orange-500/20'
                   : 'bg-white text-slate-600 hover:bg-slate-200 border border-slate-200'
-              }`}>
+              }`}
+            >
               {cat.label}
-            </button>
+            </motion.button>
           ))}
-        </div>
+        </motion.div>
 
         {/* Gallery Grid */}
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-          {filteredItems.map((item) => (
-            <div
-              key={item.id}
-              className='bg-white rounded-xl overflow-hidden border border-slate-200'>
-              <div className='aspect-video w-full overflow-hidden'>
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  className='w-full h-full object-cover'
-                />
-              </div>
-              <div className='p-4'>
-                <div className='flex items-center justify-between text-[11px] text-slate-500 mb-1'>
-                  <span>{item.date}</span>
-                  <span>{item.location}</span>
+        <motion.div
+          layout
+          className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+        >
+          <AnimatePresence mode='popLayout'>
+            {filteredItems.map((item) => (
+              <motion.div
+                layout
+                key={item.id}
+                variants={cardVariants}
+                initial='hidden'
+                animate='visible'
+                exit='exit'
+                whileHover={{ y: -6 }}
+                className='group bg-white rounded-xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl hover:border-orange-200 transition-all duration-300'
+              >
+                <div className='aspect-video w-full overflow-hidden relative'>
+                  <motion.img
+                    whileHover={{ scale: 1.08 }}
+                    transition={{ duration: 0.5, ease: luxuryEase }}
+                    src={item.image}
+                    alt={item.title}
+                    className='w-full h-full object-cover'
+                  />
                 </div>
-                <h3 className='font-bold text-sm text-[#112352]'>
-                  {item.title}
-                </h3>
-              </div>
-            </div>
-          ))}
-        </div>
+                <div className='p-4'>
+                  <div className='flex items-center justify-between text-[11px] text-slate-500 mb-1'>
+                    <span>{item.date}</span>
+                    <span>{item.location}</span>
+                  </div>
+                  <h3 className='font-bold text-sm text-[#112352] group-hover:text-main transition-colors duration-200'>
+                    {item.title}
+                  </h3>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
       </ContentContainer>
     </section>
   );
