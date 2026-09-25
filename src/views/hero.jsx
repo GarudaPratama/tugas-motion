@@ -99,8 +99,8 @@ function HeroSection() {
             >
               <motion.button
                 whileHover={{ scale: 1.04, y: -2 }}
-                whileTap={{ scale: 0.96 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+                whileTap={{ scale: 0.9 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 17 }}
                 onClick={(e) => handleSmoothScroll(e, '/#layanan')}
                 className='flex items-center gap-2 px-6 py-2.5 rounded-full bg-main hover:bg-[#dc7300] text-white text-sm font-semibold transition cursor-pointer shadow-md hover:shadow-orange-500/20'
               >
@@ -134,7 +134,7 @@ function HeroSection() {
                 opacity: { duration: 1, ease: luxuryEase },
                 scale: { duration: 1, ease: luxuryEase },
                 y: {
-                  duration: 5,
+                  duration: 3,
                   repeat: Infinity,
                   repeatType: 'reverse',
                   ease: 'easeInOut',
